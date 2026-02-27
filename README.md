@@ -1,17 +1,27 @@
- CDC Incremental Export System (Production-Ready)
-👤 Author
+CDC Incremental Export System (Production-Ready)
 
-Kallepalli Durga Bhavani
-Backend Development | Data Engineering
-Partnr Mandatory Task Submission
+👤 Author: Kallepalli Durga Bhavani
+💼 Backend Development | Data Engineering
 
 🧠 Project Overview
 
 This project implements a production-ready, containerized Change Data Capture (CDC) export system that efficiently synchronizes large datasets using timestamp-based watermarking.
 
-Instead of exporting the full database repeatedly, the system exports only new or updated records using incremental and delta export strategies, which is a common pattern in real-world data pipelines.
+Instead of exporting the full database repeatedly, the system exports only new or updated records using incremental and delta export strategies — a common real-world data pipeline pattern.
 
-The system is fully containerized using Docker & Docker Compose and supports asynchronous export jobs, watermark tracking, structured logging, and automated database seeding with 100,000+ records.
+The system includes:
+
+✔ Incremental & Delta export strategies
+
+✔ Per-consumer watermark tracking
+
+✔ Asynchronous export jobs
+
+✔ Structured logging
+
+✔ Automated seeding of 100,000+ records
+
+✔ Fully containerized deployment using Docker
 
 ⚙️ Tech Stack
 Category	Tools
@@ -21,13 +31,17 @@ ORM	SQLAlchemy
 Containerization	Docker, Docker Compose
 Data Processing	Pandas
 Testing	Pytest
-Fake Data	Faker
-Logging	Python Logging (JSON-like logs)
+Logging	Python Logging (Structured JSON-style logs)
 🏗️ System Architecture
-Client → FastAPI API → Background Export Worker → PostgreSQL
-                               ↓
-                          CSV Export Files
-                         (Docker Volume Mounted)
+Client 
+   ↓
+FastAPI API
+   ↓
+Background Export Worker
+   ↓
+PostgreSQL
+   ↓
+CSV Export Files (Docker Volume Mounted)
 Key Components
 
 users table → Stores user data with CDC metadata
@@ -54,10 +68,9 @@ cdc-export-system/
 │   ├── seed.sh
 │
 ├── tests/
-│   ├── test_api.py
-│   ├── test_export.py
+│   ├── test_health.py
 │
-├── output/              # Exported CSV files (gitignored)
+├── output/               # Exported CSV files (gitignored)
 │
 ├── docker-compose.yml
 ├── Dockerfile
@@ -70,9 +83,6 @@ cdc-export-system/
 git clone <your-repo-url>
 cd cdc-export-system
 2️⃣ Create .env File
-
-Copy from example:
-
 cp .env.example .env
 3️⃣ Run with Docker
 docker compose up --build
@@ -89,19 +99,17 @@ Start FastAPI server on port 8080
 
 🌐 API Endpoints
 ✅ Health Check
-GET /health
 
-Response:
+GET /health
 
 {
   "status": "ok",
   "timestamp": "2026-02-25T10:00:00Z"
 }
 📤 Full Export
+
 POST /exports/full
 Header: X-Consumer-ID: consumer-1
-
-Response:
 
 {
   "jobId": "uuid",
@@ -110,6 +118,7 @@ Response:
   "outputFilename": "full_consumer-1_20260225.csv"
 }
 🔁 Incremental Export
+
 POST /exports/incremental
 Header: X-Consumer-ID: consumer-1
 
@@ -117,17 +126,17 @@ Exports rows where:
 
 updated_at > last_exported_at
 🔄 Delta Export
+
 POST /exports/delta
 Header: X-Consumer-ID: consumer-1
 
-CSV includes:
+CSV includes additional column:
 
 operation = INSERT | UPDATE | DELETE
 🧭 Get Watermark
+
 GET /exports/watermark
 Header: X-Consumer-ID: consumer-1
-
-Response:
 
 {
   "consumerId": "consumer-1",
@@ -139,7 +148,7 @@ Exported files are stored in:
 
 ./output/
 
-Example:
+Example files:
 
 full_consumer-1_20260225.csv
 incremental_consumer-1_20260225.csv
@@ -201,15 +210,15 @@ PORT=8080
 🧠 CDC Design Explanation (For Evaluation)
 ✔ Watermarking
 
-Each consumer has its own watermark to avoid duplicate exports.
+Each consumer has its own watermark to prevent duplicate exports.
 
 ✔ Incremental Export
 
-Exports only updated rows since last watermark.
+Exports only updated rows since the last watermark.
 
 ✔ Delta Export
 
-Adds operation type (INSERT/UPDATE/DELETE).
+Adds operation type (INSERT / UPDATE / DELETE).
 
 ✔ Asynchronous Processing
 
@@ -221,13 +230,13 @@ Seed scripts prevent duplicate data.
 
 ✔ Containerized Deployment
 
-Single command startup using Docker Compose.
+Single-command startup using Docker Compose.
 
 ✅ How to Verify Task Requirements
 Requirement	Verification
 Docker Compose	docker compose up
 100,000 users	SELECT COUNT(*) FROM users;
-Soft deletes	SELECT COUNT(*) WHERE is_deleted=true;
+Soft deletes	SELECT COUNT(*) FROM users WHERE is_deleted=true;
 Health API	curl /health
 Full Export	POST /exports/full
 Incremental Export	POST /exports/incremental
@@ -237,11 +246,11 @@ Logs	docker logs cdc-export-system-app-1
 Tests	pytest --cov=app
 🎯 Key Learning Outcomes
 
-Change Data Capture design patterns
+Change Data Capture (CDC) design patterns
 
 Watermark-based stateful processing
 
-Asynchronous long-running jobs
+Asynchronous long-running job handling
 
 Dockerized production systems
 
@@ -251,8 +260,14 @@ Backend system design for data pipelines
 
 🏁 Conclusion
 
-This project demonstrates a scalable, production-grade CDC export system using industry best practices such as watermarking, containerization, asynchronous processing, and structured logging. It simulates real-world data synchronization pipelines used in analytics, search indexing, and data warehousing systems.
+This project demonstrates a scalable, production-grade CDC export system using industry best practices such as watermarking, containerization, asynchronous processing, and structured logging.
 
-📌 Author Note
+It simulates real-world data synchronization pipelines used in:
 
-This project was developed as part of the Partnr Mandatory Backend/Data Engineering Task and follows all contract specifications.
+Analytics systems
+
+Search indexing
+
+Data warehousing
+
+Event-driven architectures
